@@ -7,14 +7,15 @@ ODIR = obj/
 .PHONY: clean
 
 SRCS := $(wildcard *.cpp)
-BINS := $(patsubst %.cpp, %.o, $(SRCS))
+_OBJ := $(patsubst %.cpp, %.o, $(SRCS))
+OBJ = $(patsubst %.o, $(ODIR)/%.o, $(_OBJ)) 
 DEPS = high-res-timer.hpp
 
-main: $(BINS)
+main: $(OBJ)
 	@echo "Checking.."
 	$(CPP) -o $@ $^ $(CFLAGS)
 
-%.o: %.cpp $(DEPS) 	
+$(ODIR)/%.o: %.cpp $(DEPS) 	
 	@echo "Creating objects.."
 	$(CPP) -c -o $@ $< $(CFLAGS)
 
@@ -24,4 +25,4 @@ main: $(BINS)
 
 clean:
 	@echo "Cleaning up.."
-	rm -rvf *.o $(BINS)
+	rm -rvf $(ODIR)/*.o
