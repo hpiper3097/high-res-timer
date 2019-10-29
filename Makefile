@@ -1,25 +1,26 @@
 CPP = g++
 CC = gcc
 CFLAGS = -lm
+IDIR = .
+ODIR = obj/
 
-.PHONY: all clean
+.PHONY: clean
 
-SRCS := $(wildcard *.c)
-BINS := $(SRCS:%.c=%)
+SRCS := $(wildcard *.cpp)
+BINS := $(patsubst %.cpp, %.o, $(SRCS))
+DEPS = high-res-timer.hpp
 
-all: $(BINS)
-
-%: %.o
+main: $(BINS)
 	@echo "Checking.."
-	$(CC) $(CFLAGS) $< -o $@
-	
-%.o: %.cpp
-	@echo "Creating objects.."
-	$(CPP) -c $<
+	$(CPP) -o $@ $^ $(CFLAGS)
 
-%.o: %.c
+%.o: %.cpp $(DEPS) 	
 	@echo "Creating objects.."
-	$(CC) -c $<
+	$(CPP) -c -o $@ $< $(CFLAGS)
+
+#%.o: %.c $(DEPS)
+#	@echo "Creating objects.."
+#	$(CC) -c $@ $<
 
 clean:
 	@echo "Cleaning up.."
